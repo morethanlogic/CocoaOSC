@@ -215,12 +215,19 @@ static NSString* globToRegex(NSString *glob);
 
 - (void)dispatchPacket:(OSCPacket *)packet
 {
-    // TODO: bundles...
-    
+  @try {
     NSArray *patternComponents = [OSCDispatcher splitPatternComponentsToRegex:packet.address];
     NSAssert1(patternComponents, @"Failed to remove OSC method with invalid address pattern: %@", packet.address);
     NSArray *nodes = [rootNode descendantsMatchingPattern:patternComponents];
     [nodes makeObjectsPerformSelector:@selector(dispatchMessage:) withObject:packet];
+  }
+  @catch (NSException *exception) {
+    
+  }
+  @finally {
+    
+  }
+    
 }
 
 
