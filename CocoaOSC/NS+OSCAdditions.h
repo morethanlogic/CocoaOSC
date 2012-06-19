@@ -18,15 +18,6 @@
 @end
 
 
-@interface NSString (OSCAdditions)
-
-// This returns ASCII-encoded bytes, padded with nulls to a multiple of 4 bytes.
-// Returns nil if receiver cannot be ASCII-encoded.
-- (NSData *)oscStringData;
-
-@end
-
-
 @interface NSArray (OSCAdditions)
 
 - (id)car;

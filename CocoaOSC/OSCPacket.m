@@ -188,7 +188,7 @@ static id parseOSCObject(char typetag, const void *bytes, NSUInteger *ioIndex, N
     }
     else if ([obj isKindOfClass:[NSString class]])
     {
-        return [obj oscStringData];
+        return [OSCPacket oscStringData:obj];
     }
     else if ([obj isKindOfClass:[NSData class]])
     {
@@ -223,6 +223,21 @@ static id parseOSCObject(char typetag, const void *bytes, NSUInteger *ioIndex, N
     return nil;
 }
 
++ (NSData *)oscStringData:(NSString *)str
+{
+    NSMutableData *data = [[[str dataUsingEncoding:NSASCIIStringEncoding] mutableCopy] autorelease];
+
+    // Add terminating NULL.
+    [data setLength:[data length]+1];
+
+    // Pad to multiple of 4 bytes if necessary.
+    int rem = (int)([data length] % 4);
+    if (rem != 0)
+    {
+        [data appendBytes:"\0\0\0" length:4-rem];
+    }
+    return data;
+}
 
 - (NSData *)encode
 {
@@ -411,8 +426,10 @@ static id parseOSCObject(char typetag, const void *bytes, NSUInteger *ioIndex, N
         NSLog(@"Failed to encode OSCPacket because address doesn't start with a slash: %@", address);
         return nil;
     }
-    [data appendData:[address oscStringData]];
-    [data appendData:[self.typeTag oscStringData]];
+    NSLog(@"here 2");
+    [data appendData:[OSCPacket oscStringData:address]];
+    NSLog(@"here 3");
+    [data appendData:[OSCPacket oscStringData:self.typeTag]];
     for (id arg in arguments)
     {
         [data appendData:[OSCPacket dataForContentObject:arg]];
@@ -498,7 +515,7 @@ static id parseOSCObject(char typetag, const void *bytes, NSUInteger *ioIndex, N
 - (NSData *)encode
 {
     NSMutableData *data = [NSMutableData data];
-    [data appendData:[@"#bundle" oscStringData]];
+    [data appendData:[OSCPacket oscStringData:@"#bundle"]];
     [data appendData:[OSCPacket dataForContentObject:timetag]];
     for (OSCPacket *child in childPackets)
     {

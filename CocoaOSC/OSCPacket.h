@@ -18,6 +18,7 @@
 - (id)initWithData:(NSData *)data;
 - (NSData *)encode;
 + (NSData *)dataForContentObject:(id)obj;
++ (NSData *)oscStringData:(NSString *)str;
 
 // If true, then it has a timetag and childPackets, but no arguments or address.
 @property (nonatomic, readonly, getter=isBundle) BOOL bundle;
