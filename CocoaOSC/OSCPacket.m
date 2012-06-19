@@ -426,9 +426,7 @@ static id parseOSCObject(char typetag, const void *bytes, NSUInteger *ioIndex, N
         NSLog(@"Failed to encode OSCPacket because address doesn't start with a slash: %@", address);
         return nil;
     }
-    NSLog(@"here 2");
     [data appendData:[OSCPacket oscStringData:address]];
-    NSLog(@"here 3");
     [data appendData:[OSCPacket oscStringData:self.typeTag]];
     for (id arg in arguments)
     {
